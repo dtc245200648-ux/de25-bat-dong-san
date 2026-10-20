@@ -98,7 +98,7 @@ Gửi một form liên hệ và refresh Explore để có sự kiện mới. Log
 
 ## Hardening được áp dụng
 
-1. Tiến trình Apache/PHP chạy user `www-data` (non-root); cap bị drop và `no-new-privileges` bật cho web/Nginx.
+1. Tiến trình Apache/PHP chạy user `www-data` (non-root), container web drop toàn bộ Linux capabilities; Nginx bật `no-new-privileges`.
 2. MySQL ở network `backend` internal, không publish cổng; phpMyAdmin chỉ mở trên loopback máy demo.
 3. Web dùng user database riêng, không dùng root; exporter có user/quyền riêng.
 4. Mật khẩu cấu hình qua `.env`, `.env` và private key nằm trong `.gitignore`.
