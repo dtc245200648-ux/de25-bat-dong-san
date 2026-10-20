@@ -68,7 +68,7 @@ Trình duyệt báo chứng thư tự ký chưa được tin cậy; chấp nhậ
 - Danh sách tin có tiêu đề, ảnh, giá, diện tích, loại hình và địa chỉ.
 - Tìm kiếm theo tiêu đề/địa chỉ; lọc loại hình và giá tối đa.
 - Gửi liên hệ lưu vào bảng `contacts`; xem bản ghi trong phpMyAdmin.
-- Schema/dữ liệu mẫu ở `mysql/init.sql`; chỉ tự chạy khi khởi tạo volume DB mới.
+- Schema/dữ liệu mẫu UTF-8 (`utf8mb4`) ở `mysql/init.sql`; chỉ tự chạy khi khởi tạo volume DB mới.
 - PDO prepared statements, encode HTML output, kiểm tra email/độ dài đầu vào, CSRF token.
 
 Để nạp lại schema từ đầu (lệnh này xóa dữ liệu DB demo hiện tại):

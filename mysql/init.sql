@@ -1,3 +1,5 @@
+SET NAMES utf8mb4;
+
 CREATE TABLE IF NOT EXISTS properties (
   id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   title VARCHAR(180) NOT NULL,
@@ -9,7 +11,7 @@ CREATE TABLE IF NOT EXISTS properties (
   image_url VARCHAR(500) NOT NULL DEFAULT '',
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   INDEX idx_properties_search (property_type, price, area)
-);
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS contacts (
   id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -20,7 +22,7 @@ CREATE TABLE IF NOT EXISTS contacts (
   message VARCHAR(2000) NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_contacts_property FOREIGN KEY (property_id) REFERENCES properties(id) ON DELETE SET NULL
-);
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 INSERT INTO properties (title, description, property_type, price, area, address, image_url) VALUES
 ('Nhà phố hiện đại gần trung tâm', 'Nhà 3 tầng thoáng sáng, đường ô tô, sổ hồng riêng. Phù hợp gia đình trẻ.', 'Nhà bán', 4850000000, 86.50, 'Quận Bình Thạnh, TP. Hồ Chí Minh', 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80'),
