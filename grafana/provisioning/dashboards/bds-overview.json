@@ -1,0 +1,27 @@
+{
+  "annotations": {"list": []},
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {"datasource":{"type":"prometheus","uid":"prometheus"},"fieldConfig":{"defaults":{"unit":"percent","min":0,"max":100},"overrides":[]},"gridPos":{"h":8,"w":12,"x":0,"y":0},"id":1,"options":{"legend":{"displayMode":"list","placement":"bottom"},"tooltip":{"mode":"single"}},"targets":[{"expr":"100 * (1 - avg by (instance) (rate(container_cpu_usage_seconds_total{container_label_com_docker_compose_project=\"bds-system-management\",image!=\"\"}[5m])))","legendFormat":"CPU idle %","refId":"A"}],"title":"Container CPU usage (approx. idle)","type":"timeseries"},
+    {"datasource":{"type":"prometheus","uid":"prometheus"},"fieldConfig":{"defaults":{"unit":"bytes"},"overrides":[]},"gridPos":{"h":8,"w":12,"x":12,"y":0},"id":2,"options":{"legend":{"displayMode":"list","placement":"bottom"},"tooltip":{"mode":"single"}},"targets":[{"expr":"sum by (name) (container_memory_working_set_bytes{container_label_com_docker_compose_project=\"bds-system-management\",image!=\"\"})","legendFormat":"{{name}}","refId":"A"}],"title":"Container memory working set","type":"timeseries"},
+    {"datasource":{"type":"prometheus","uid":"prometheus"},"fieldConfig":{"defaults":{"unit":"short"},"overrides":[]},"gridPos":{"h":7,"w":12,"x":0,"y":8},"id":3,"options":{"legend":{"displayMode":"list","placement":"bottom"},"tooltip":{"mode":"single"}},"targets":[{"expr":"mysql_global_status_threads_connected","legendFormat":"Connected threads","refId":"A"},{"expr":"mysql_global_status_queries","legendFormat":"Queries total","refId":"B"}],"title":"MySQL connections and queries","type":"timeseries"},
+    {"datasource":{"type":"prometheus","uid":"prometheus"},"fieldConfig":{"defaults":{"unit":"short","min":0,"max":1},"overrides":[]},"gridPos":{"h":7,"w":12,"x":12,"y":8},"id":4,"options":{"legend":{"displayMode":"list","placement":"bottom"},"tooltip":{"mode":"single"}},"targets":[{"expr":"probe_success{job=\"nginx\"}","legendFormat":"{{instance}}","refId":"A"}],"title":"Nginx HTTPS probe (1 = healthy)","type":"timeseries"},
+    {"datasource":{"type":"prometheus","uid":"prometheus"},"fieldConfig":{"defaults":{"unit":"short","min":0,"max":1},"overrides":[]},"gridPos":{"h":5,"w":12,"x":0,"y":15},"id":5,"options":{"legend":{"displayMode":"table","placement":"bottom"},"tooltip":{"mode":"single"}},"targets":[{"expr":"up","legendFormat":"{{job}} / {{instance}}","refId":"A"}],"title":"Prometheus scrape targets (1 = UP)","type":"timeseries"}
+  ],
+  "refresh": "15s",
+  "schemaVersion": 39,
+  "tags": ["docker", "mysql", "nginx"],
+  "templating": {"list": []},
+  "time": {"from": "now-1h", "to": "now"},
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "BDS - System Overview",
+  "uid": "bds-overview",
+  "version": 1,
+  "weekStart": ""
+}
