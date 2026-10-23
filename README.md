@@ -138,3 +138,13 @@ Commit 3 — feat: centralize logs with loki promtail and hardening
 ```
 
 Nếu repo GitHub đã có remote, kiểm tra trước bằng `git remote -v`, sau đó push branch chính lên repository mã số sinh viên. Không tạo/xuất bản repo thay bạn vì cần dùng tài khoản cá nhân của bạn. Báo cáo tối thiểu 10 trang nên bao gồm bìa chuẩn có thông tin sinh viên, mục lục, kiến trúc, schema, giải thích cách hoạt động từng bước, ảnh chụp demo, phân tích hardening, kết quả/giới hạn và tài liệu tham khảo.
+# Các trang và chức năng website
+
+- `/` — trang chủ, hiển thị một số tin mới.
+- `/listings` — danh sách tin, tìm theo từ khóa/địa chỉ, loại bất động sản và giá tối đa.
+- `/property?id=1` — trang chi tiết tin với mô tả, giá, diện tích, địa chỉ và nút liên hệ.
+- `/contact` — biểu mẫu liên hệ; dữ liệu được lưu trong bảng `contacts`.
+- `/post` — biểu mẫu đăng tin nhà bán, căn hộ hoặc đất nền; tin mới được lưu vào bảng `properties`.
+- `/admin` — khu vực quản trị; đăng nhập bằng `ADMIN_USER` và `ADMIN_PASSWORD` trong `.env` để sửa/xóa tin và xem hộp thư liên hệ.
+
+`ADMIN_PASSWORD` cần là mật khẩu riêng, đủ mạnh; không dùng lại mật khẩu DB/Grafana. File `.env` bị Git ignore. Quản trị viên có thể sửa tin mẫu hoặc tin đăng sai dữ liệu; yêu cầu liên hệ được lưu trong MySQL và hiển thị cùng tin được quan tâm nếu có.

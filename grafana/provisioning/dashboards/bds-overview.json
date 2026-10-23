@@ -2,26 +2,112 @@
   "annotations": {"list": []},
   "editable": true,
   "fiscalYearStartMonth": 0,
-  "graphTooltip": 0,
+  "graphTooltip": 1,
   "id": null,
   "links": [],
   "liveNow": false,
   "panels": [
-    {"datasource":{"type":"prometheus","uid":"prometheus"},"fieldConfig":{"defaults":{"unit":"percent","min":0,"max":100},"overrides":[]},"gridPos":{"h":8,"w":12,"x":0,"y":0},"id":1,"options":{"legend":{"displayMode":"list","placement":"bottom"},"tooltip":{"mode":"single"}},"targets":[{"expr":"100 * (1 - avg by (instance) (rate(container_cpu_usage_seconds_total{container_label_com_docker_compose_project=\"bds-system-management\",image!=\"\"}[5m])))","legendFormat":"CPU idle %","refId":"A"}],"title":"Container CPU usage (approx. idle)","type":"timeseries"},
-    {"datasource":{"type":"prometheus","uid":"prometheus"},"fieldConfig":{"defaults":{"unit":"bytes"},"overrides":[]},"gridPos":{"h":8,"w":12,"x":12,"y":0},"id":2,"options":{"legend":{"displayMode":"list","placement":"bottom"},"tooltip":{"mode":"single"}},"targets":[{"expr":"sum by (name) (container_memory_working_set_bytes{container_label_com_docker_compose_project=\"bds-system-management\",image!=\"\"})","legendFormat":"{{name}}","refId":"A"}],"title":"Container memory working set","type":"timeseries"},
-    {"datasource":{"type":"prometheus","uid":"prometheus"},"fieldConfig":{"defaults":{"unit":"short"},"overrides":[]},"gridPos":{"h":7,"w":12,"x":0,"y":8},"id":3,"options":{"legend":{"displayMode":"list","placement":"bottom"},"tooltip":{"mode":"single"}},"targets":[{"expr":"mysql_global_status_threads_connected","legendFormat":"Connected threads","refId":"A"},{"expr":"mysql_global_status_queries","legendFormat":"Queries total","refId":"B"}],"title":"MySQL connections and queries","type":"timeseries"},
-    {"datasource":{"type":"prometheus","uid":"prometheus"},"fieldConfig":{"defaults":{"unit":"short","min":0,"max":1},"overrides":[]},"gridPos":{"h":7,"w":12,"x":12,"y":8},"id":4,"options":{"legend":{"displayMode":"list","placement":"bottom"},"tooltip":{"mode":"single"}},"targets":[{"expr":"probe_success{job=\"nginx\"}","legendFormat":"{{instance}}","refId":"A"}],"title":"Nginx HTTPS probe (1 = healthy)","type":"timeseries"},
-    {"datasource":{"type":"prometheus","uid":"prometheus"},"fieldConfig":{"defaults":{"unit":"short","min":0,"max":1},"overrides":[]},"gridPos":{"h":5,"w":12,"x":0,"y":15},"id":5,"options":{"legend":{"displayMode":"table","placement":"bottom"},"tooltip":{"mode":"single"}},"targets":[{"expr":"up","legendFormat":"{{job}} / {{instance}}","refId":"A"}],"title":"Prometheus scrape targets (1 = UP)","type":"timeseries"}
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "CPU percentage used by each container. 100% equals one fully used CPU core.",
+      "fieldConfig": {"defaults": {"unit": "percent"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+      "id": 1,
+      "options": {"legend": {"displayMode": "list", "placement": "bottom"}, "tooltip": {"mode": "multi"}},
+      "targets": [{"expr": "sum by (id) (rate(container_cpu_usage_seconds_total{job=\"cadvisor\",id!=\"/\"}[5m])) * 100", "legendFormat": "{{id}}", "refId": "A"}],
+      "title": "Docker cgroup CPU usage (%)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "Container memory working set, excluding reclaimable cache.",
+      "fieldConfig": {"defaults": {"unit": "bytes"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+      "id": 2,
+      "options": {"legend": {"displayMode": "list", "placement": "bottom"}, "tooltip": {"mode": "multi"}},
+      "targets": [{"expr": "container_memory_working_set_bytes{job=\"cadvisor\",id!=\"/\"}", "legendFormat": "{{id}}", "refId": "A"}],
+      "title": "Docker cgroup memory working set",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "Network throughput reported by cAdvisor. This Docker Desktop host currently exposes the root cgroup only.",
+      "fieldConfig": {"defaults": {"unit": "Bps"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8},
+      "id": 3,
+      "options": {"legend": {"displayMode": "list", "placement": "bottom"}, "tooltip": {"mode": "multi"}},
+      "targets": [
+        {"expr": "sum by (id) (rate(container_network_receive_bytes_total{job=\"cadvisor\"}[5m]))", "legendFormat": "{{id}} receive", "refId": "A"},
+        {"expr": "sum by (id) (rate(container_network_transmit_bytes_total{job=\"cadvisor\"}[5m]))", "legendFormat": "{{id}} transmit", "refId": "B"}
+      ],
+      "title": "Docker host network throughput",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "Blackbox HTTPS check. 1 means the website responded successfully.",
+      "fieldConfig": {"defaults": {"unit": "short", "min": 0, "max": 1, "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}, {"color": "green", "value": 1}]}}, "overrides": []},
+      "gridPos": {"h": 8, "w": 6, "x": 12, "y": 8},
+      "id": 4,
+      "options": {"colorMode": "background", "graphMode": "area", "justifyMode": "center", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
+      "targets": [{"expr": "probe_success{job=\"nginx\"}", "legendFormat": "HTTPS website", "refId": "A"}],
+      "title": "Website HTTPS availability (1 = UP)",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "End-to-end HTTPS probe duration in seconds.",
+      "fieldConfig": {"defaults": {"unit": "s"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 6, "x": 18, "y": 8},
+      "id": 5,
+      "options": {"legend": {"displayMode": "hidden", "placement": "bottom"}, "tooltip": {"mode": "single"}},
+      "targets": [{"expr": "probe_duration_seconds{job=\"nginx\"}", "legendFormat": "HTTPS response time", "refId": "A"}],
+      "title": "Website HTTPS response time",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "Live connected MySQL client threads.",
+      "fieldConfig": {"defaults": {"unit": "short", "min": 0}, "overrides": []},
+      "gridPos": {"h": 7, "w": 8, "x": 0, "y": 16},
+      "id": 6,
+      "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "center", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
+      "targets": [{"expr": "mysql_global_status_threads_connected", "legendFormat": "Connected clients", "refId": "A"}],
+      "title": "MySQL connected clients",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "MySQL statements processed per second over the last five minutes.",
+      "fieldConfig": {"defaults": {"unit": "ops"}, "overrides": []},
+      "gridPos": {"h": 7, "w": 8, "x": 8, "y": 16},
+      "id": 7,
+      "options": {"legend": {"displayMode": "hidden", "placement": "bottom"}, "tooltip": {"mode": "single"}},
+      "targets": [{"expr": "rate(mysql_global_status_queries[5m])", "legendFormat": "Queries / second", "refId": "A"}],
+      "title": "MySQL query rate",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "Prometheus scrape health for configured exporters and services.",
+      "fieldConfig": {"defaults": {"unit": "short", "min": 0, "max": 1, "mappings": [{"options": {"0": {"text": "DOWN", "color": "red"}, "1": {"text": "UP", "color": "green"}}, "type": "value"}]}, "overrides": []},
+      "gridPos": {"h": 7, "w": 16, "x": 16, "y": 16},
+      "id": 8,
+      "options": {"showHeader": true, "sortBy": [{"desc": false, "displayName": "job"}]},
+      "targets": [{"expr": "up", "format": "table", "instant": true, "legendFormat": "{{job}}", "refId": "A"}],
+      "title": "Prometheus targets (1 = UP)",
+      "type": "table"
+    }
   ],
   "refresh": "15s",
   "schemaVersion": 39,
-  "tags": ["docker", "mysql", "nginx"],
+  "tags": ["docker", "mysql", "nginx", "container"],
   "templating": {"list": []},
   "time": {"from": "now-1h", "to": "now"},
   "timepicker": {},
   "timezone": "browser",
-  "title": "BDS - System Overview",
+  "title": "BDS - Application & Container Monitoring",
   "uid": "bds-overview",
-  "version": 1,
+  "version": 2,
   "weekStart": ""
 }

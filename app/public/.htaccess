@@ -1,1 +1,7 @@
 DirectoryIndex index.php
+RewriteEngine On
+RewriteRule ^admin/?$ admin.php [L]
+RewriteRule ^listings/?$ index.php?page=listings [QSA,L]
+RewriteRule ^property/?$ index.php?page=property [QSA,L]
+RewriteRule ^contact/?$ index.php?page=contact [QSA,L]
+RewriteRule ^post/?$ index.php?page=post [QSA,L]
